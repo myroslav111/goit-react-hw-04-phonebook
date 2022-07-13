@@ -10,7 +10,6 @@ function FormPhonebook({ onSubmit }) {
   const [number, setNumber] = useState('');
   // записываем значение инпута по name
   const handleChange = e => {
-    console.log(e.target.name);
     const { name, value } = e.target;
     switch (name) {
       case 'name':

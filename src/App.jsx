@@ -1,38 +1,37 @@
 // import { render } from '@testing-library/react';
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { MainBoxApp } from './App.styled';
 import FormPhonebook from './components/FormPhonebook';
 import ContainerContact from 'components/ContainerContact';
 import FormFinde from 'components/FormFinde';
 import { nanoid } from 'nanoid';
-// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Notify.failure('Qui timide rogat docet negare');
+function App() {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setfilter] = useState('');
 
-class App extends Component {
-  state = {
-    contacts: [
-      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    name: '',
-    number: '',
-    filter: '',
-  };
+  // берем дату с локалстореджа
+  useEffect(() => {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      setContacts([...parsedContacts]);
+    }
+  }, []);
 
   // создаем новый контакт по инпуту
-  addContact = dataPerson => {
+  const addContact = dataPerson => {
     // проверяем на существование новый контакт в контактах
-    const boolean = this.state.contacts.some(
+    const boolean = contacts.some(
       nameContact => dataPerson.name === nameContact.name
     );
     if (boolean) {
-      // Notify.failure('Qui timide rogat docet negare');
+      toast.error('already has');
       return;
     }
-
     const contact = {
       id: nanoid(),
       // когда имя свойства и значения = тогда достаточно имя свойства
@@ -40,66 +39,46 @@ class App extends Component {
       number: dataPerson.number,
     };
     // распыляем новый обьект контакта в масив контактов
-    this.setState(({ contacts }) => ({
-      contacts: [contact, ...contacts],
-    }));
+    setContacts([...contacts, contact]);
+    localStorage.setItem('contacts', JSON.stringify([...contacts, contact]));
   };
 
   // удаляем контакт
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
+  const deleteContact = contactId => {
+    const filteredObj = contacts.filter(contact => contact.id !== contactId);
+    setContacts([...filteredObj]);
+    localStorage.setItem('contacts', JSON.stringify([...filteredObj]));
   };
 
   // записываем велью инпута
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  const changeFilter = e => {
+    const filterValue = e.currentTarget.value;
+    setfilter(filterValue);
   };
 
   // отфильтрованый масив контактов отвечающий поиску
-  getVisibleContact = () => {
-    const { filter, contacts } = this.state;
+  const getVisibleContact = () => {
     const normalizeFilter = filter.toLowerCase();
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizeFilter)
     );
   };
 
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-    }
-  }
-
-  componentDidUpdate(prevState) {
-    // console.log(prevProps);
-    console.log(prevState);
-    console.log(this.state);
-    // обезательно проверить обновилось ли стейт иначе зациклим
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
-
-  render() {
-    // отфильтрованый масив контактов отвечающий поиску
-    const visibleTodos = this.getVisibleContact();
-    return (
-      <MainBoxApp>
-        <h1>Phone book</h1>
-        <FormPhonebook onSubmit={this.addContact} />
-        <h1>Phon list</h1>
-        <FormFinde onChange={this.changeFilter} value={this.state.filter} />
-        <ContainerContact
-          arrContacts={visibleTodos}
-          onDeleteContact={this.deleteContact}
-        />
-      </MainBoxApp>
-    );
-  }
+  // отфильтрованый масив контактов отвечающий поиску
+  const visibleTodos = getVisibleContact();
+  return (
+    <MainBoxApp>
+      <h1>Phone book</h1>
+      <FormPhonebook onSubmit={addContact} />
+      <h1>Phon list</h1>
+      <FormFinde onChange={changeFilter} value={filter} />
+      <ContainerContact
+        arrContacts={visibleTodos}
+        onDeleteContact={deleteContact}
+      />
+      <ToastContainer autoClose={3000} />
+    </MainBoxApp>
+  );
 }
 
 export default App;
