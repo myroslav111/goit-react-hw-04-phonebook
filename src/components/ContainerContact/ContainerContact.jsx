@@ -2,19 +2,25 @@ import React from 'react';
 import { ListWraper, BoxList } from './ContainerContact.styled';
 import ListContactItem from './ListContactItem';
 import PropTypes from 'prop-types';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import '../animation/ContactItemAnimation.css';
 
 const ContainerContact = ({ arrContacts, onDeleteContact }) => {
   return (
     <BoxList>
-      <ListWraper>
+      {/* <ListWraper> */}
+      <TransitionGroup component={ListWraper}>
         {arrContacts.map(contact => (
-          <ListContactItem
-            key={contact.id}
-            arrContacts={contact}
-            onDeleteContact={onDeleteContact}
-          />
+          <CSSTransition key={contact.id} timeout={250} classNames="fade">
+            <ListContactItem
+              key={contact.id}
+              arrContacts={contact}
+              onDeleteContact={onDeleteContact}
+            />
+          </CSSTransition>
         ))}
-      </ListWraper>
+      </TransitionGroup>
+      {/* </ListWraper> */}
     </BoxList>
   );
 };
