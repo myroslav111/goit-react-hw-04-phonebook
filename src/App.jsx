@@ -1,5 +1,5 @@
 // import { render } from '@testing-library/react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MainBoxApp } from './App.styled';
 import FormPhonebook from './components/FormPhonebook';
 import ContainerContact from 'components/ContainerContact';
@@ -10,17 +10,21 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(() => {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    return contacts ? parsedContacts : [];
+  });
   const [filter, setfilter] = useState('');
 
   // берем дату с локалстореджа
-  useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      setContacts([...parsedContacts]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const contacts = localStorage.getItem('contacts');
+  //   const parsedContacts = JSON.parse(contacts);
+  //   if (parsedContacts) {
+  //     setContacts([...parsedContacts]);
+  //   }
+  // }, []);
 
   // создаем новый контакт по инпуту
   const addContact = dataPerson => {
