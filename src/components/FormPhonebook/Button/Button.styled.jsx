@@ -80,7 +80,7 @@ export const ButtonSubmit = styled.button`
     position: absolute;
     display: block;
   }
-  & span:nth-child(1) {
+  & span:nth-of-type(1) {
     top: 0;
     left: -100%;
     width: 100%;
@@ -89,7 +89,7 @@ export const ButtonSubmit = styled.button`
     animation: animation1 1s linear infinite;
     animation-delay: 0.25s;
   }
-  & span:nth-child(2) {
+  & span:nth-of-type(2) {
     top: -100;
     right: 0%;
     width: 2px;
@@ -98,7 +98,7 @@ export const ButtonSubmit = styled.button`
     animation: animation2 1s linear infinite;
     animation-delay: 0.25s;
   }
-  & span:nth-child(3) {
+  & span:nth-of-type(3) {
     bottom: 0;
     right: -100%;
     width: 100%;
@@ -107,7 +107,7 @@ export const ButtonSubmit = styled.button`
     animation: animation3 1s linear infinite;
     animation-delay: 0.5s;
   }
-  & span:nth-child(4) {
+  & span:nth-of-type(4) {
     bottom: -100%;
     left: 0;
     width: 2px;
